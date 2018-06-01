@@ -4,14 +4,16 @@ body {
     padding: 0;
 } 
 .wrapper, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
-    position: sticky;
     height: 750px;
+} 
+.box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7 {
+    position: sticky;
     z-index: 1;
     -webkit-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
     -moz-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
     -o-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
     transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
-} 
+}
 .wrapper {
     width: 1442px;
     border-right: 1px solid #f2f2f2;

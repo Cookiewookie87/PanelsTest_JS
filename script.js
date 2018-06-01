@@ -16,10 +16,8 @@ function scrollWrap(e) {
         const rightSideOfCurrent = boxCoord.right; // coordinarion of right side of panel
         const leftSideOfNextItem = (index < boxes.length - 1) ? box.nextElementSibling.getBoundingClientRect().left : 0; // coordinarion of left side of NEXT panel (when index is 8, the next sibling is 0 if it is less than 8 than it is next sibling)
 
-        box.style.position = "sticky";
         box.style.left = `${leftMarginStop}px`;
 
-        //scrollCoord > 0 ? boxes[1].classList.add("shadow") : boxes[1].classList.remove("shadow"); // controll shadow of first element
         // controll shadow of all 0+ elements
         if (leftSideOfCurrent <= leftMarginStop) {
             box.nextElementSibling.classList.add("shadow");
