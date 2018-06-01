@@ -1,0 +1,56 @@
+
+body {
+    margin: 0;
+    padding: 0;
+} 
+.wrapper, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
+    position: sticky;
+    height: 750px;
+    z-index: 1;
+    -webkit-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
+    -moz-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
+    -o-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
+    transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
+} 
+.wrapper {
+    width: 1442px;
+    border-right: 1px solid #f2f2f2;
+    border-bottom: 1px solid #f2f2f2;
+    display: flex;
+    overflow: scroll;
+}  
+.wrapper .box0 {
+    min-width: 357px;
+    background-color: #1a1a1a;
+}
+.wrapper .box1 {
+    min-width: 357px;
+    background-color: #333;
+}
+.wrapper .box2 {
+    min-width: 702px;
+    background-color: #4d4d4d;
+}
+.wrapper .box3 {
+    min-width: 630px;
+    background-color: #666;
+}
+.wrapper .box4 {
+    min-width: 630px;
+    background-color: #808080;
+}
+.wrapper .box5 {
+    min-width: 357px;
+    background-color: #999;
+}
+.wrapper .box6 {
+    min-width: 630px;
+    background-color: #b3b3b3;
+}
+.wrapper .box7 {
+    min-width: 630px;
+    background-color: #ccc;
+}
+.shadow {
+    box-shadow: -4px 0px 40px rgba(0, 0, 0, 1.2);
+}
