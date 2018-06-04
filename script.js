@@ -2,7 +2,7 @@ const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 let leftMargin = 60; //px
 let boxesFlagArray = []; // flag for stacked panels
-for(var i=0; i<boxes.length; i++){
+for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false});
 }
 
@@ -28,7 +28,7 @@ function scrollWrap(e) {
         }
         // when panel 5 reach left margin, left margin change from 60 to 30 to all panels
         if (index > 4 && leftSideOfCurrent <= leftMarginStop) {
-            leftMargin = 30;
+            leftMargin = 20;
         } else if (index < 6 && leftSideOfCurrent > leftMarginStop && !boxes[index].classList.contains('shadow')) {
             leftMargin = 60;
         }
@@ -38,12 +38,39 @@ function scrollWrap(e) {
                 boxesFlagArray[index-1].isStacked = true;
             }
         }
+
         if(leftMarginStop != leftSideOfCurrent && index > 0){
              if(boxesFlagArray[index-1].isStacked){
                 boxesFlagArray[index-1].isStacked = false;
             }
         }
+  
     });
+}
+function onHover() {
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+
+    if (isPanelStacked) {
+        for (i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left + 100}px`;
+        }
+    }
+}
+
+function onHoverLeave() {
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+
+    if (isPanelStacked) {
+        for (i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left - 100}px`;
+        }
+    }
 }
 
 wrapper.addEventListener("scroll", scrollWrap);
+boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
+boxes.forEach((box, index) => box.addEventListener("mouseleave", onHoverLeave));
