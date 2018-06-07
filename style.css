@@ -1,6 +1,10 @@
+html {
+    height: 100%;
+}
 body {
     margin: 0;
     padding: 0;
+    min-height: 100%;
 } 
 .wrapper, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
     height: 900px;
@@ -8,10 +12,13 @@ body {
 .box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7 {
     position: sticky;
     z-index: 1;
-    -webkit-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
-    -moz-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
-    -o-transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
-    transition: box-shadow 0.2s cubic-bezier(0.4,-0.01, 0, 0.98), left 0.2s;
+    -webkit-transition: box-shadow 0.5s linear, left 0.2s;
+    -moz-transition: box-shadow 0.5s linear, left 0.2s;
+    -o-transition: box-shadow 0.5s linear, left 0.2s;
+    transition: box-shadow 0.5s linear, left 0.2s;
+}
+.box7 {
+    padding-right: 62px;
 }
 .wrapper {
     width: 1442px;
@@ -53,5 +60,5 @@ body {
     background-color: #ccc;
 }
 .shadow {
-    box-shadow: -4px 0px 40px rgba(0, 0, 0, 1.2);
+    box-shadow: -4px 0px 40px rgba(0, 0, 0, 1);
 }
