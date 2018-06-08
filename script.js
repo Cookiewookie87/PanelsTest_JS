@@ -2,6 +2,7 @@ const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
 const box = document.querySelectorAll(".box");
+const hoverMargin = 100;
 let leftMargin = 60; //px
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
@@ -40,13 +41,11 @@ function scrollWrap(e) {
                 boxesFlagArray[index-1].isStacked = true;
             }
         }
-
         if(leftMarginStop != leftSideOfCurrent && index > 0){
              if(boxesFlagArray[index-1].isStacked){
                 boxesFlagArray[index-1].isStacked = false;
             }
         }
-  
     });
 }
 
@@ -63,16 +62,19 @@ function onHover(event) {
         if(event.fromElement == body || event.fromElement == wrapper && event.toElement.classList.contains("box")){  
                 for (let i = indexedElement + 1; i < boxes.length; i++) {
                     const iCoord = boxes[i].getBoundingClientRect();
-                    boxes[i].style.left = `${iCoord.left + 100}px`;
+                    boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
                     boxesFlagArray[i].isExpanded = true;
                 }  
         } else if (fromBoxIndex > toBoxIndex) {
-            console.log(fromBoxIndex);
-            console.log(toBoxIndex);
-            event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
+            for (let i = indexedElement + 1; i < boxes.length; i++) {
+                const iCoord = boxes[i].getBoundingClientRect();
+                boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
+                boxesFlagArray[i].isExpanded = true;
+            }
+            event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
             boxesFlagArray[fromBoxIndex].isExpanded = true;
         } else if (fromBoxIndex < toBoxIndex) {
-            event.toElement.style.left = `${boxCoordTo.left - 100}px`;
+            event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
             boxesFlagArray[toBoxIndex].isExpanded = true;
         }
     }
@@ -80,31 +82,14 @@ function onHover(event) {
 
 function onHoverLeave(event) {
     if(event.toElement == body || event.toElement == wrapper && event.fromElement.classList.contains("box")) {
-        console.table(boxesFlagArray);
-    }
-    /*
-    console.log(event.toElement);
-    var body = document.querySelector("body"),
-        wrapper = document.querySelector(".wrapper");
-    const indexedElement = boxes.indexOf(this);
-    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
-
-    if (isPanelStacked) {
-        if(event.toElement == body || event.fromElement == wrapper){
-            if (isPanelStacked) {
-                for (let i = indexedElement + 1; i < boxes.length; i++) {
-                    const iCoord = boxes[i].getBoundingClientRect();
-                    boxes[i].style.left = `${iCoord.left - 100}px`;
-                }
+        for (let i = 0; i < boxesFlagArray.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            if (boxesFlagArray[i].isExpanded == true) {
+                boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
             }
-        } else {
-    
         }
-    }
-    */   
+    }  
 }
-
-
 
 wrapper.addEventListener("scroll", scrollWrap);
 boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
