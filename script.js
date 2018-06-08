@@ -2,8 +2,8 @@ const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
 const box = document.querySelectorAll(".box");
-const hoverMargin = 100;
 let leftMargin = 60; //px
+let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false, "isExpanded": false});
@@ -46,9 +46,55 @@ function scrollWrap(e) {
                 boxesFlagArray[index-1].isStacked = false;
             }
         }
+  
     });
 }
 
+function onHover(event) { 
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+    const fromBoxIndex = boxes.indexOf(event.fromElement);
+    const toBoxIndex = boxes.indexOf(event.toElement);
+
+    if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked && !hoverExtendFlag) {
+        // when from body to box, extend all pannels from hover + 100px
+        for (let i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left + 100}px`;
+            boxesFlagArray[i].isExpanded = true;
+        }
+        hoverExtendFlag = true;
+    }
+}
+
+function onHoverLeave(event) {
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+    const fromBoxIndex = boxes.indexOf(event.fromElement);
+    const toBoxIndex = boxes.indexOf(event.toElement);
+
+    if((event.toElement == body || event.toElement == wrapper) && event.fromElement.classList.contains("box") && hoverExtendFlag) {
+        // controll the mouse from box to body when left margin is narrow or extended
+        if (leftMargin === 20) {
+            for (let i = 0; i < boxes.length; i++) {
+                boxes[i].style.left = `${20 * i}px`; // set all panels back to left margin multiply 20px
+                boxesFlagArray[i].isExpanded = true;
+            }
+        } else if (leftMargin === 60) {
+            for (let i = 0; i < boxes.length; i++) {
+                boxes[i].style.left = `${60 * i}px`; // set all panels back to left margin multiply 60px
+                boxesFlagArray[i].isExpanded = true;
+            }
+        }
+        hoverExtendFlag = false;
+    }
+}
+
+wrapper.addEventListener("scroll", scrollWrap);
+boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
+boxes.forEach((box, index) => box.addEventListener("mouseleave", onHoverLeave));
+
+/*
 function onHover(event) {
     const indexedElement = boxes.indexOf(this);
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
@@ -62,19 +108,16 @@ function onHover(event) {
         if(event.fromElement == body || event.fromElement == wrapper && event.toElement.classList.contains("box")){  
                 for (let i = indexedElement + 1; i < boxes.length; i++) {
                     const iCoord = boxes[i].getBoundingClientRect();
-                    boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
+                    boxes[i].style.left = `${iCoord.left + 100}px`;
                     boxesFlagArray[i].isExpanded = true;
                 }  
         } else if (fromBoxIndex > toBoxIndex) {
-            for (let i = indexedElement + 1; i < boxes.length; i++) {
-                const iCoord = boxes[i].getBoundingClientRect();
-                boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
-                boxesFlagArray[i].isExpanded = true;
-            }
-            event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
+            console.log(fromBoxIndex);
+            console.log(toBoxIndex);
+            event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
             boxesFlagArray[fromBoxIndex].isExpanded = true;
         } else if (fromBoxIndex < toBoxIndex) {
-            event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
+            event.toElement.style.left = `${boxCoordTo.left - 100}px`;
             boxesFlagArray[toBoxIndex].isExpanded = true;
         }
     }
@@ -82,15 +125,27 @@ function onHover(event) {
 
 function onHoverLeave(event) {
     if(event.toElement == body || event.toElement == wrapper && event.fromElement.classList.contains("box")) {
-        for (let i = 0; i < boxesFlagArray.length; i++) {
-            const iCoord = boxes[i].getBoundingClientRect();
-            if (boxesFlagArray[i].isExpanded == true) {
-                boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
-            }
-        }
-    }  
-}
+        console.table(boxesFlagArray);
+    }
+    console.log(event.toElement);
+    var body = document.querySelector("body"),
+        wrapper = document.querySelector(".wrapper");
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
 
-wrapper.addEventListener("scroll", scrollWrap);
-boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
-boxes.forEach((box, index) => box.addEventListener("mouseleave", onHoverLeave));
+    if (isPanelStacked) {
+        if(event.toElement == body || event.fromElement == wrapper){
+            if (isPanelStacked) {
+                for (let i = indexedElement + 1; i < boxes.length; i++) {
+                    const iCoord = boxes[i].getBoundingClientRect();
+                    boxes[i].style.left = `${iCoord.left - 100}px`;
+                }
+            }
+        } else {
+    
+        }
+    } 
+}
+*/ 
+
+
