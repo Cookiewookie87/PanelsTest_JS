@@ -55,7 +55,10 @@ function onHover(event) {
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
     const fromBoxIndex = boxes.indexOf(event.fromElement);
     const toBoxIndex = boxes.indexOf(event.toElement);
+    const boxCoordFrom = (fromBoxIndex >= 0) ? boxes[fromBoxIndex].getBoundingClientRect() : "";
+    const boxCoordTo = boxes[toBoxIndex].getBoundingClientRect();
 
+    // controll if we hover from body to box and if panel is stacked and it is not expanded yet
     if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked && !hoverExtendFlag) {
         // when from body to box, extend all pannels from hover + 100px
         for (let i = indexedElement + 1; i < boxes.length; i++) {
@@ -64,6 +67,26 @@ function onHover(event) {
             boxesFlagArray[i].isExpanded = true;
         }
         hoverExtendFlag = true;
+    }
+
+    // controll if we hover from box to box and if panel is stacked
+    if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && isPanelStacked) {
+         if (!hoverExtendFlag) {
+             for (let i = indexedElement + 1; i < boxes.length; i++) {
+                const iCoord = boxes[i].getBoundingClientRect();
+                boxes[i].style.left = `${iCoord.left + 100}px`;
+                boxesFlagArray[i].isExpanded = true;
+            }
+             hoverExtendFlag = true;
+         }
+        // separate box hover controll
+        if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
+            event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
+            boxesFlagArray[fromBoxIndex].isExpanded = true;
+        } else if (fromBoxIndex < toBoxIndex && hoverExtendFlag) {
+            event.toElement.style.left = `${boxCoordTo.left - 100}px`;
+            boxesFlagArray[toBoxIndex].isExpanded = true;
+        }
     }
 }
 
