@@ -1,3 +1,4 @@
+
 html {
     height: 100%;
 }
@@ -6,19 +7,16 @@ body {
     padding: 0;
     min-height: 100%;
 } 
-.wrapper, .box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
+.wrapper, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
     height: 900px;
 } 
-.box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7 {
+.box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
     position: sticky;
     z-index: 1;
     -webkit-transition: box-shadow 0.5s linear, left 0.2s;
     -moz-transition: box-shadow 0.5s linear, left 0.2s;
     -o-transition: box-shadow 0.5s linear, left 0.2s;
     transition: box-shadow 0.5s linear, left 0.2s;
-}
-.box7 {
-    padding-right: 62px;
 }
 .wrapper {
     width: 1442px;
@@ -56,14 +54,15 @@ body {
     background-color: #b3b3b3;
 }
 .wrapper .box7 {
-    min-width: 630px;
+    min-width: 973px;
     background-color: #ccc;
 }
 .shadow {
     box-shadow: -4px 0px 40px rgba(0, 0, 0, 1);
 }
-
-/*Scrollbar*/
-::-webkit-scrollbar { 
-    display: none; 
+.box8 {
+    min-width: 329px;
+    height: 900px;
+    background-color: white;
 }
+

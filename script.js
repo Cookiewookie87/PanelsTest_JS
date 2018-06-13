@@ -1,3 +1,8 @@
+// TODO fix:
+// panel animation is jumping when hovering (and 2 panels are not stacked)
+// error handle: Cannot read property 'classList' of null
+// next element that goes in stack, if you repeat hover and out will move forward only
+
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
@@ -21,32 +26,35 @@ function scrollWrap(e) {
 
         box.style.left = `${leftMarginStop}px`;
 
-        // controll shadow of all 0+ elements
-        if (leftSideOfCurrent <= leftMarginStop) {
-            box.nextElementSibling.classList.add("shadow");
-        }
-        // controll removal of shadow of all 0+ elements
-        if (leftSideOfNextItem === rightSideOfCurrent) {
-            box.nextElementSibling.classList.remove("shadow");
-        }
-        // when panel 5 reach left margin, left margin change from 60 to 30 to all panels
-        if (index > 4 && leftSideOfCurrent <= leftMarginStop) {
-            leftMargin = 20;
-        } else if (index < 6 && leftSideOfCurrent > leftMarginStop && !boxes[index].classList.contains('shadow')) {
-            leftMargin = 60;
-        }
-        // setting flag (true/false) to stacked panels (reached leftMarginStop)
-        if(leftMarginStop == leftSideOfCurrent && index > 0){
-            if(!boxesFlagArray[index-1].isStacked){
-                boxesFlagArray[index-1].isStacked = true;
+        // do not apply shadow to last element
+        if (index < boxes.length-1) { 
+            // controll shadow of all 0+ elements
+            if (leftSideOfCurrent <= leftMarginStop) {
+                box.nextElementSibling.classList.add("shadow");
+            }
+            // controll removal of shadow of all 0+ elements
+            if (leftSideOfNextItem === rightSideOfCurrent) {
+                box.nextElementSibling.classList.remove("shadow");
+            }
+            // when panel 5 reach left margin, left margin change from 60 to 30 to all panels
+            if (index > 4 && leftSideOfCurrent <= leftMarginStop) {
+                leftMargin = 20;
+            } else if (index < 6 && leftSideOfCurrent > leftMarginStop && !boxes[index].classList.contains('shadow')) {
+                leftMargin = 60;
+            }
+            // setting flag (true/false) to stacked panels (reached leftMarginStop)
+            if(leftMarginStop == leftSideOfCurrent && index > 0){
+                if(!boxesFlagArray[index].isStacked){
+                    boxesFlagArray[index-1].isStacked = true;
+                }
+            }
+            if(leftMarginStop != leftSideOfCurrent && index > 0){
+                 if(boxesFlagArray[index-1].isStacked){
+                    boxesFlagArray[index-1].isStacked = false;
+                }
             }
         }
-        if(leftMarginStop != leftSideOfCurrent && index > 0){
-             if(boxesFlagArray[index-1].isStacked){
-                boxesFlagArray[index-1].isStacked = false;
-            }
-        }
-  
+        
     });
 }
 
@@ -116,59 +124,3 @@ function onHoverLeave(event) {
 wrapper.addEventListener("scroll", scrollWrap);
 boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
 boxes.forEach((box, index) => box.addEventListener("mouseleave", onHoverLeave));
-
-/*
-function onHover(event) {
-    const indexedElement = boxes.indexOf(this);
-    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
-    const fromBoxIndex = boxes.indexOf(event.fromElement);
-    const toBoxIndex = boxes.indexOf(event.toElement);
-
-    if (isPanelStacked) {
-        const boxCoordFrom = (fromBoxIndex >= 0) ? boxes[fromBoxIndex].getBoundingClientRect() : "";
-        const boxCoordTo = boxes[toBoxIndex].getBoundingClientRect();
-
-        if(event.fromElement == body || event.fromElement == wrapper && event.toElement.classList.contains("box")){  
-                for (let i = indexedElement + 1; i < boxes.length; i++) {
-                    const iCoord = boxes[i].getBoundingClientRect();
-                    boxes[i].style.left = `${iCoord.left + 100}px`;
-                    boxesFlagArray[i].isExpanded = true;
-                }  
-        } else if (fromBoxIndex > toBoxIndex) {
-            console.log(fromBoxIndex);
-            console.log(toBoxIndex);
-            event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
-            boxesFlagArray[fromBoxIndex].isExpanded = true;
-        } else if (fromBoxIndex < toBoxIndex) {
-            event.toElement.style.left = `${boxCoordTo.left - 100}px`;
-            boxesFlagArray[toBoxIndex].isExpanded = true;
-        }
-    }
-}
-
-function onHoverLeave(event) {
-    if(event.toElement == body || event.toElement == wrapper && event.fromElement.classList.contains("box")) {
-        console.table(boxesFlagArray);
-    }
-    console.log(event.toElement);
-    var body = document.querySelector("body"),
-        wrapper = document.querySelector(".wrapper");
-    const indexedElement = boxes.indexOf(this);
-    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
-
-    if (isPanelStacked) {
-        if(event.toElement == body || event.fromElement == wrapper){
-            if (isPanelStacked) {
-                for (let i = indexedElement + 1; i < boxes.length; i++) {
-                    const iCoord = boxes[i].getBoundingClientRect();
-                    boxes[i].style.left = `${iCoord.left - 100}px`;
-                }
-            }
-        } else {
-    
-        }
-    } 
-}
-*/ 
-
-
