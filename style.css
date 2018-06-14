@@ -60,7 +60,7 @@ body {
 .shadow {
     box-shadow: -4px 0px 40px rgba(0, 0, 0, 1);
 }
-.box8 {
+.scroll-limit-box {
     min-width: 329px;
     height: 900px;
     background-color: white;

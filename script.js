@@ -1,8 +1,3 @@
-// TODO fix:
-// panel animation is jumping when hovering (and 2 panels are not stacked)
-// next element that goes in stack, if you repeat hover and out will move forward only
-// when hovering back to initiate, all + panels should go back (-100)
-
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
@@ -15,8 +10,6 @@ for(var i = 0; i < boxes.length; i++){
 }
 
 function scrollWrap(e) {
-    let scrollCoord = wrapper.scrollLeft; // horizontal scroll value
-    
     boxes.forEach((box, index) => {
         let leftMarginStop = (index) * leftMargin; // calculation for left margin stop (60, 120, 180,...)
         const boxCoord = box.getBoundingClientRect();
@@ -102,7 +95,6 @@ function onHover(event) {
 function onHoverLeave(event) {
     const indexedElement = boxes.indexOf(this);
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
-    const fromBoxIndex = boxes.indexOf(event.fromElement);
     const toBoxIndex = boxes.indexOf(event.toElement);
 
     if (event.toElement == null) return; // fix error: Cannot read property 'classList' of null
@@ -124,8 +116,8 @@ function onHoverLeave(event) {
     }
 
     // controll from box to box hover out, to return to initial state
-    if (event.fromElement.classList.contains("box") && (event.toElement.classList.contains("box") && isPanelStacked === false)) {
-        for (let i = indexedElement; i < boxes.length; i++) {
+    if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && (isPanelStacked === false || (isPanelStacked === true && boxesFlagArray[toBoxIndex].isStacked === false )) ) { // checks if the from is true and to is false (first false element)
+        for (let i = indexedElement+1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
             boxes[i].style.left = `${iCoord.left - 100}px`;
             boxesFlagArray[i].isExpanded = false;
@@ -135,5 +127,5 @@ function onHoverLeave(event) {
 }
 
 wrapper.addEventListener("scroll", scrollWrap);
-boxes.forEach((box, index) => box.addEventListener("mouseenter", onHover));
-boxes.forEach((box, index) => box.addEventListener("mouseleave", onHoverLeave));
+boxes.forEach(box => box.addEventListener("mouseenter", onHover));
+boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
