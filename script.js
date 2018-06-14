@@ -1,7 +1,7 @@
 // TODO fix:
 // panel animation is jumping when hovering (and 2 panels are not stacked)
-// error handle: Cannot read property 'classList' of null
 // next element that goes in stack, if you repeat hover and out will move forward only
+// when hovering back to initiate, all + panels should go back (-100)
 
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
@@ -27,7 +27,7 @@ function scrollWrap(e) {
         box.style.left = `${leftMarginStop}px`;
 
         // do not apply shadow to last element
-        if (index < boxes.length-1) { 
+        if (index < boxes.length-1) {
             // controll shadow of all 0+ elements
             if (leftSideOfCurrent <= leftMarginStop) {
                 box.nextElementSibling.classList.add("shadow");
@@ -54,17 +54,18 @@ function scrollWrap(e) {
                 }
             }
         }
-        
     });
 }
 
-function onHover(event) { 
+function onHover(event) {
     const indexedElement = boxes.indexOf(this);
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
     const fromBoxIndex = boxes.indexOf(event.fromElement);
     const toBoxIndex = boxes.indexOf(event.toElement);
     const boxCoordFrom = (fromBoxIndex >= 0) ? boxes[fromBoxIndex].getBoundingClientRect() : "";
     const boxCoordTo = boxes[toBoxIndex].getBoundingClientRect();
+
+    if (event.fromElement == null) return; // fix error: Cannot read property 'classList' of null
 
     // controll if we hover from body to box and if panel is stacked and it is not expanded yet
     if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked && !hoverExtendFlag) {
@@ -80,14 +81,14 @@ function onHover(event) {
     // controll if we hover from box to box and if panel is stacked
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && isPanelStacked) {
          if (!hoverExtendFlag) {
-             for (let i = indexedElement + 1; i < boxes.length; i++) {
+            for (let i = indexedElement + 1; i < boxes.length; i++) {
                 const iCoord = boxes[i].getBoundingClientRect();
                 boxes[i].style.left = `${iCoord.left + 100}px`;
                 boxesFlagArray[i].isExpanded = true;
             }
              hoverExtendFlag = true;
          }
-        // separate box hover controll
+        // From box to box hover controll
         if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
             event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
             boxesFlagArray[fromBoxIndex].isExpanded = true;
@@ -104,18 +105,30 @@ function onHoverLeave(event) {
     const fromBoxIndex = boxes.indexOf(event.fromElement);
     const toBoxIndex = boxes.indexOf(event.toElement);
 
+    if (event.toElement == null) return; // fix error: Cannot read property 'classList' of null
+    
     if((event.toElement == body || event.toElement == wrapper) && event.fromElement.classList.contains("box") && hoverExtendFlag) {
         // controll the mouse from box to body when left margin is narrow or extended
         if (leftMargin === 20) {
             for (let i = 0; i < boxes.length; i++) {
                 boxes[i].style.left = `${20 * i}px`; // set all panels back to left margin multiply 20px
-                boxesFlagArray[i].isExpanded = true;
+                boxesFlagArray[i].isExpanded = false;
             }
         } else if (leftMargin === 60) {
             for (let i = 0; i < boxes.length; i++) {
                 boxes[i].style.left = `${60 * i}px`; // set all panels back to left margin multiply 60px
-                boxesFlagArray[i].isExpanded = true;
+                boxesFlagArray[i].isExpanded = false;
             }
+        }
+        hoverExtendFlag = false;
+    }
+
+    // controll from box to box hover out, to return to initial state
+    if (event.fromElement.classList.contains("box") && (event.toElement.classList.contains("box") && isPanelStacked === false)) {
+        for (let i = indexedElement; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left - 100}px`;
+            boxesFlagArray[i].isExpanded = false;
         }
         hoverExtendFlag = false;
     }
