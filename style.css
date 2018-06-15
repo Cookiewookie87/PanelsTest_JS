@@ -58,7 +58,7 @@ body {
     background-color: #ccc;
 }
 .shadow {
-    box-shadow: -4px 0px 40px rgba(0, 0, 0, 1);
+    box-shadow: -12px 0 24px 0 rgba(0, 0, 0, 0.2);
 }
 .scroll-limit-box {
     min-width: 329px;

@@ -2,6 +2,7 @@ const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
 const box = document.querySelectorAll(".box");
+const hoverMargin = 200; //px
 let leftMargin = 60; //px
 let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
@@ -65,7 +66,7 @@ function onHover(event) {
         // when from body to box, extend all pannels from hover + 100px
         for (let i = indexedElement + 1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
-            boxes[i].style.left = `${iCoord.left + 100}px`;
+            boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
             boxesFlagArray[i].isExpanded = true;
         }
         hoverExtendFlag = true;
@@ -76,17 +77,17 @@ function onHover(event) {
          if (!hoverExtendFlag) {
             for (let i = indexedElement + 1; i < boxes.length; i++) {
                 const iCoord = boxes[i].getBoundingClientRect();
-                boxes[i].style.left = `${iCoord.left + 100}px`;
+                boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
                 boxesFlagArray[i].isExpanded = true;
             }
              hoverExtendFlag = true;
          }
-        // From box to box hover controll
+        // From box to box hover controll, move panels
         if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
-            event.fromElement.style.left = `${boxCoordFrom.left + 100}px`;
+            event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
             boxesFlagArray[fromBoxIndex].isExpanded = true;
         } else if (fromBoxIndex < toBoxIndex && hoverExtendFlag) {
-            event.toElement.style.left = `${boxCoordTo.left - 100}px`;
+            event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
             boxesFlagArray[toBoxIndex].isExpanded = true;
         }
     }
@@ -119,7 +120,7 @@ function onHoverLeave(event) {
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && (isPanelStacked === false || (isPanelStacked === true && boxesFlagArray[toBoxIndex].isStacked === false )) ) { // checks if the from is true and to is false (first false element)
         for (let i = indexedElement+1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
-            boxes[i].style.left = `${iCoord.left - 100}px`;
+            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
             boxesFlagArray[i].isExpanded = false;
         }
         hoverExtendFlag = false;
