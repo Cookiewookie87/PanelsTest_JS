@@ -3,7 +3,6 @@ const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
 const dash = document.querySelector(".dashboard");
 const hoverMargin = 100; //px
-let shrinkFlag = false;
 let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
@@ -60,7 +59,6 @@ function scrollWrap() {
                     shrinkMargin *= multiplyShrinkMargin;
                     box.style.left = shrinkMargin + "px";
                     multiplyShrinkMargin++;
-                    shrinkFlag = true;
                 }
             });
         } else if (index < 5 && leftSideOfCurrent > leftValue && !boxes[index].classList.contains("shadow")) { 
@@ -69,7 +67,6 @@ function scrollWrap() {
                     let growMargin = 60;
                     growMargin *= index + 1;
                     box.style.left = growMargin + "px";
-                    shrinkFlag = false;
                 }
             });
         }
@@ -100,27 +97,27 @@ function onHover(event) {
 
     // controll if we hover from body to box and if panel is stacked and it is not expanded yet
     if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked) {
-        for (let i = indexedElement + 1; i < boxes.length; i++) {
-            const iCoord = boxes[i].getBoundingClientRect();
-            boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
-        }
+        slidingPanelsOpen(indexedElement);
     }
 
     // controll if we hover from box to box and if panel is stacked
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && isPanelStacked) {
         if (!hoverExtendFlag) {
-            for (let i = indexedElement + 1; i < boxes.length; i++) {
-                const iCoord = boxes[i].getBoundingClientRect();
-                boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
-            }
+            slidingPanelsOpen(indexedElement);
             hoverExtendFlag = true;
         }
     }
 
-    // From box to box hover controll, move panels
+    // controll mouse from dashboard to box
+    if (event.toElement.classList.contains("box") && event.fromElement === dash && isPanelStacked) { 
+        slidingPanelsOpen(indexedElement);
+        hoverExtendFlag = true;
+    }
+
+    // From box to box hover controll
     if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
         event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
-    } else if (fromBoxIndex < toBoxIndex && hoverExtendFlag) {
+    } else if ((fromBoxIndex < toBoxIndex && fromBoxIndex > -1) && hoverExtendFlag) {
         event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
     }
 }
@@ -134,37 +131,46 @@ function onHoverLeave(event) {
 
     // controll the mouse from box to body when left margin is narrow or extended
     if((event.toElement == body || event.toElement == wrapper) && event.fromElement.classList.contains("box")) {
-        for (let i = indexedElement + 1; i < boxes.length; i++) {
-            const iCoord = boxes[i].getBoundingClientRect();
-            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
-        }
+        slidingPanelsClose(indexedElement);
         hoverExtendFlag = false;
     }
 
     // controll from box to box hover out, to return to initial state
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && (isPanelStacked === false || (isPanelStacked === true && boxesFlagArray[toBoxIndex].isStacked === false )) ) { // checks if the from is true and to is false (first false element)
-        for (let i = indexedElement+1; i < boxes.length; i++) {
+        slidingPanelsClose(indexedElement);
+        hoverExtendFlag = false;
+    }
+}
+
+function dashMouseEnter(event) { 
+    if (event.fromElement == null) return; // fix error: Cannot read property 'classList' of null
+
+    // controll hover on dashboard from box
+    if (event.fromElement.classList.contains("box") && event.toElement === dash) { 
+        for (let i = 1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
             boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
         }
         hoverExtendFlag = false;
     }
 }
-/*
-function dashMouseEnter(event) { 
-    const indexedElement = boxes.indexOf(this);
 
-    // controll the mouse from box to body when left margin is narrow or extended
-    if (hoverExtendFlag) {
-        for (let i = 1; i < boxes.length; i++) {
-            const iCoord = boxes[i].getBoundingClientRect();
-            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
-        }
-        hoverExtendFlag = false;
-    }  
+// function to slide panels to open (+)
+function slidingPanelsOpen(indexedElement) { 
+    for (let i = indexedElement + 1; i < boxes.length; i++) {
+        const iCoord = boxes[i].getBoundingClientRect();
+        boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
+    }
 }
-*/
+// function to slide panels to close (-)
+function slidingPanelsClose(indexedElement) { 
+    for (let i = indexedElement + 1; i < boxes.length; i++) {
+        const iCoord = boxes[i].getBoundingClientRect();
+        boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
+    }
+}
+
 wrapper.addEventListener("scroll", scrollWrap);
 boxes.forEach(box => box.addEventListener("mouseenter", onHover));
 boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
-//dash.addEventListener("mouseenter", dashMouseEnter);
+dash.addEventListener("mouseenter", dashMouseEnter);
