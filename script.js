@@ -1,51 +1,88 @@
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
-const box = document.querySelectorAll(".box");
+const dash = document.querySelector(".dashboard");
 const hoverMargin = 100; //px
-let leftMargin = 60; //px
+let shrinkFlag = false;
 let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
-    boxesFlagArray.push({"isStacked": false, "isExpanded": false});
+    boxesFlagArray.push({"isStacked": false});
 }
 
 function scrollWrap() {
     boxes.forEach((box, index) => {
-        let leftMarginStop = (index) * leftMargin; // calculation for left margin stop (60, 120, 180,...)
         const boxCoord = box.getBoundingClientRect();
+        const dashCoord = dash.getBoundingClientRect()
+        const dashRight = dashCoord.right;
         const leftSideOfCurrent = boxCoord.left; // coordinarion of left side of panel
         const rightSideOfCurrent = boxCoord.right; // coordinarion of right side of panel
         const leftSideOfNextItem = (index < boxes.length - 1) ? box.nextElementSibling.getBoundingClientRect().left : 0; // coordinarion of left side of NEXT panel (when index is 8, the next sibling is 0 if it is less than 8 than it is next sibling)
-
-        box.style.left = `${leftMarginStop}px`;
+        const leftValue = parseInt(window.getComputedStyle(box, null).getPropertyValue("left")); // gets the left value of CSS without "px"
+        let multiplyShrinkMargin = 4; // when panels shrink we want first element to start stacking 20 * 4px
         
-        // do not apply shadow to last element
-        if (index < boxes.length-1) {
-            // controll shadow of all 0+ elements
-            if (leftSideOfCurrent <= leftMarginStop) {
+        // change dashboard
+        if (index === 0 && leftSideOfCurrent === leftValue) {
+            //dash.style.backgroundImage = "url(img/0.1.png)";
+            //dash.style.backgroundRepeat = "no-repeat";
+            dash.style.backgroundColor = "#ccc";
+        }
+        if (index === 0 && leftSideOfNextItem === rightSideOfCurrent) { 
+            //dash.style.backgroundImage = "url(img/0.0.png)";
+            //dash.style.backgroundRepeat = "no-repeat";
+            dash.style.backgroundColor = "#1a1a1a";
+        }
+
+        // shadow controll
+        if (index < boxes.length-1) { // do not apply shadow to last element
+            // controll shadow of first panel
+            if (leftSideOfCurrent < dashRight && index === 0) { 
+                box.classList.add("shadow");
+            }
+            if (leftSideOfCurrent === dashRight && index === 0) { 
+                box.classList.remove("shadow");
+            }
+            // controll shadow of all 1+ elements
+            if (leftSideOfCurrent <= leftValue) {
                 box.nextElementSibling.classList.add("shadow");
             }
-            // controll removal of shadow of all 0+ elements
+            // controll removal of shadow of all 1+ elements
             if (leftSideOfNextItem === rightSideOfCurrent) {
                 box.nextElementSibling.classList.remove("shadow");
             }
-            // when panel 5 reach left margin, left margin change from 60 to 30 to all panels
-            if (index > 4 && leftSideOfCurrent <= leftMarginStop) {
-                leftMargin = 20;
-            } else if (index < 6 && leftSideOfCurrent > leftMarginStop && !boxes[index].classList.contains('shadow')) {
-                leftMargin = 60;
-            }
-            // setting flag (true/false) to stacked panels (reached leftMarginStop)
-            if(leftMarginStop == leftSideOfCurrent && index > 0){
-                if(!boxesFlagArray[index].isStacked){
-                    boxesFlagArray[index-1].isStacked = true;
+        }
+
+        // stacking controll
+        if (index > 3 && leftSideOfCurrent <= leftValue) { 
+            boxes.forEach((box, index) => {
+                if (index > 0) {
+                    let shrinkMargin = 20;
+                    shrinkMargin *= multiplyShrinkMargin;
+                    box.style.left = shrinkMargin + "px";
+                    multiplyShrinkMargin++;
+                    shrinkFlag = true;
                 }
-            }
-            if(leftMarginStop != leftSideOfCurrent && index > 0){
-                 if(boxesFlagArray[index-1].isStacked){
-                    boxesFlagArray[index-1].isStacked = false;
+            });
+        } else if (index < 5 && leftSideOfCurrent > leftValue && !boxes[index].classList.contains('shadow')) { 
+            boxes.forEach((box, index) => {
+                if (index > -1) {
+                    let growMargin = 60;
+                    growMargin *= index + 1;
+                    box.style.left = growMargin + "px";
+                    shrinkFlag = false;
                 }
+            });
+        }
+
+        // setting flag (true/false) to stacked panels (reached leftValue)
+        if(leftValue == leftSideOfCurrent && index > 0){
+            if(!boxesFlagArray[index].isStacked){
+                boxesFlagArray[index-1].isStacked = true;
+            }
+        }
+        if(leftValue != leftSideOfCurrent && index > 0){
+             if(boxesFlagArray[index-1].isStacked){
+                boxesFlagArray[index-1].isStacked = false;
             }
         }
     });
@@ -62,34 +99,29 @@ function onHover(event) {
     if (event.fromElement == null) return; // fix error: Cannot read property 'classList' of null
 
     // controll if we hover from body to box and if panel is stacked and it is not expanded yet
-    if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked && !hoverExtendFlag) {
-        // when from body to box, extend all pannels from hover + 100px
+    if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked) {
         for (let i = indexedElement + 1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
             boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
-            boxesFlagArray[i].isExpanded = true;
         }
-        hoverExtendFlag = true;
     }
 
     // controll if we hover from box to box and if panel is stacked
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && isPanelStacked) {
-         if (!hoverExtendFlag) {
+        if (!hoverExtendFlag) {
             for (let i = indexedElement + 1; i < boxes.length; i++) {
                 const iCoord = boxes[i].getBoundingClientRect();
                 boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
-                boxesFlagArray[i].isExpanded = true;
             }
              hoverExtendFlag = true;
-         }
-        // From box to box hover controll, move panels
-        if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
-            event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
-            boxesFlagArray[fromBoxIndex].isExpanded = true;
-        } else if (fromBoxIndex < toBoxIndex && hoverExtendFlag) {
-            event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
-            boxesFlagArray[toBoxIndex].isExpanded = true;
         }
+    }
+
+    // From box to box hover controll, move panels
+    if (fromBoxIndex > toBoxIndex && hoverExtendFlag) {
+        event.fromElement.style.left = `${boxCoordFrom.left + hoverMargin}px`;
+    } else if (fromBoxIndex < toBoxIndex && hoverExtendFlag) {
+        event.toElement.style.left = `${boxCoordTo.left - hoverMargin}px`;
     }
 }
 
@@ -97,21 +129,14 @@ function onHoverLeave(event) {
     const indexedElement = boxes.indexOf(this);
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
     const toBoxIndex = boxes.indexOf(event.toElement);
-
-    if (event.toElement == null) return; // fix error: Cannot read property 'classList' of null
     
-    if((event.toElement == body || event.toElement == wrapper) && event.fromElement.classList.contains("box") && hoverExtendFlag) {
-        // controll the mouse from box to body when left margin is narrow or extended
-        if (leftMargin === 20) {
-            for (let i = 0; i < boxes.length; i++) {
-                boxes[i].style.left = `${20 * i}px`; // set all panels back to left margin multiply 20px
-                boxesFlagArray[i].isExpanded = false;
-            }
-        } else if (leftMargin === 60) {
-            for (let i = 0; i < boxes.length; i++) {
-                boxes[i].style.left = `${60 * i}px`; // set all panels back to left margin multiply 60px
-                boxesFlagArray[i].isExpanded = false;
-            }
+    if (event.toElement == null) return; // fix error: Cannot read property 'classList' of null
+
+    // controll the mouse from box to body when left margin is narrow or extended
+    if((event.toElement == body || event.toElement == wrapper) && event.fromElement.classList.contains("box")) {
+        for (let i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
         }
         hoverExtendFlag = false;
     }
@@ -121,12 +146,25 @@ function onHoverLeave(event) {
         for (let i = indexedElement+1; i < boxes.length; i++) {
             const iCoord = boxes[i].getBoundingClientRect();
             boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
-            boxesFlagArray[i].isExpanded = false;
         }
         hoverExtendFlag = false;
     }
 }
+/*
+function dashMouseEnter(event) { 
+    const indexedElement = boxes.indexOf(this);
 
+    // controll the mouse from box to body when left margin is narrow or extended
+    if (hoverExtendFlag) {
+        for (let i = 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
+        }
+        hoverExtendFlag = false;
+    }  
+}
+*/
 wrapper.addEventListener("scroll", scrollWrap);
 boxes.forEach(box => box.addEventListener("mouseenter", onHover));
 boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
+//dash.addEventListener("mouseenter", dashMouseEnter);
