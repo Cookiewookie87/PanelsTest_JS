@@ -13,7 +13,7 @@ for(var i = 0; i < boxes.length; i++){
 function scrollWrap() {
     boxes.forEach((box, index) => {
         const boxCoord = box.getBoundingClientRect();
-        const dashCoord = dash.getBoundingClientRect()
+        const dashCoord = dash.getBoundingClientRect();
         const dashRight = dashCoord.right;
         const leftSideOfCurrent = boxCoord.left; // coordinarion of left side of panel
         const rightSideOfCurrent = boxCoord.right; // coordinarion of right side of panel
@@ -63,7 +63,7 @@ function scrollWrap() {
                     shrinkFlag = true;
                 }
             });
-        } else if (index < 5 && leftSideOfCurrent > leftValue && !boxes[index].classList.contains('shadow')) { 
+        } else if (index < 5 && leftSideOfCurrent > leftValue && !boxes[index].classList.contains("shadow")) { 
             boxes.forEach((box, index) => {
                 if (index > -1) {
                     let growMargin = 60;
@@ -81,7 +81,7 @@ function scrollWrap() {
             }
         }
         if(leftValue != leftSideOfCurrent && index > 0){
-             if(boxesFlagArray[index-1].isStacked){
+            if(boxesFlagArray[index-1].isStacked) {
                 boxesFlagArray[index-1].isStacked = false;
             }
         }
@@ -113,7 +113,7 @@ function onHover(event) {
                 const iCoord = boxes[i].getBoundingClientRect();
                 boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
             }
-             hoverExtendFlag = true;
+            hoverExtendFlag = true;
         }
     }
 
