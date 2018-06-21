@@ -7,7 +7,7 @@ body {
     padding: 0;
     min-height: 100%;
 } 
-.wrapper, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
+.wrapper, .box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {
     height: 900px;
 } 
 .box0, .box1, .box2, .box3, .box4, .box5, .box6, .box7, .box8 {

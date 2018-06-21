@@ -10,7 +10,7 @@ for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false, "isExpanded": false});
 }
 
-function scrollWrap(e) {
+function scrollWrap() {
     boxes.forEach((box, index) => {
         let leftMarginStop = (index) * leftMargin; // calculation for left margin stop (60, 120, 180,...)
         const boxCoord = box.getBoundingClientRect();
@@ -19,7 +19,7 @@ function scrollWrap(e) {
         const leftSideOfNextItem = (index < boxes.length - 1) ? box.nextElementSibling.getBoundingClientRect().left : 0; // coordinarion of left side of NEXT panel (when index is 8, the next sibling is 0 if it is less than 8 than it is next sibling)
 
         box.style.left = `${leftMarginStop}px`;
-
+        
         // do not apply shadow to last element
         if (index < boxes.length-1) {
             // controll shadow of all 0+ elements
