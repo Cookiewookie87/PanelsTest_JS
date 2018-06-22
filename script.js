@@ -10,7 +10,7 @@ for(var i = 0; i < boxes.length; i++){
 }
 
 function scrollWrap() {
-    console.log(wrapper.scrollLeft);
+    //console.log(wrapper.scrollLeft);
     boxes.forEach((box, index) => {
         const boxCoord = box.getBoundingClientRect();
         const dashCoord = dash.getBoundingClientRect();
@@ -156,6 +156,56 @@ function dashMouseEnter(event) {
     }
 }
 
+function panelClick() {
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+    //TODO: this must be done in more dynamic way
+    // When clicked to element scroll to position
+    if (isPanelStacked) {
+        switch (indexedElement) {
+        case 0:
+            wrapper.scroll({
+                left: 298,
+                behavior: "smooth"
+            });
+
+            break;
+        case 1:
+            wrapper.scroll({
+                left: 607,
+                behavior: "smooth"
+            });
+            break;
+        case 2:
+            wrapper.scroll({
+                left: 1059,
+                behavior: "smooth"
+            });
+            break;
+        case 3:
+            wrapper.scroll({
+                left: 1971,
+                behavior: "smooth"
+            });
+            break;
+        case 4:
+            wrapper.scroll({
+                left: 2584,
+                behavior: "smooth"
+            });
+            break;
+        case 5:
+            wrapper.scroll({
+                left: 3076,
+                behavior: "smooth"
+            });
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 // function to slide panels to open (+)
 function slidingPanelsOpen(indexedElement) { 
     for (let i = indexedElement + 1; i < boxes.length; i++) {
@@ -168,37 +218,6 @@ function slidingPanelsClose(indexedElement) {
     for (let i = indexedElement + 1; i < boxes.length; i++) {
         const iCoord = boxes[i].getBoundingClientRect();
         boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
-    }
-}
-
-function panelClick() {
-    const indexedElement = boxes.indexOf(this);
-    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
-    //TODO: this must be done in more dynamic way
-    // When clicked to element scroll to position
-    if (isPanelStacked) {
-        switch (indexedElement) {
-        case 0:
-            wrapper.scrollLeft = 298;
-            break;
-        case 1:
-            wrapper.scrollLeft = 607;
-            break;
-        case 2:
-            wrapper.scrollLeft = 1059;
-            break;
-        case 3:
-            wrapper.scrollLeft = 1971;
-            break;
-        case 4:
-            wrapper.scrollLeft = 2584;
-            break;
-        case 5:
-            wrapper.scrollLeft = 3076;
-            break;
-        default:
-            break;
-        }
     }
 }
 
