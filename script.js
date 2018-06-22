@@ -10,6 +10,7 @@ for(var i = 0; i < boxes.length; i++){
 }
 
 function scrollWrap() {
+    console.log(wrapper.scrollLeft);
     boxes.forEach((box, index) => {
         const boxCoord = box.getBoundingClientRect();
         const dashCoord = dash.getBoundingClientRect();
@@ -170,7 +171,39 @@ function slidingPanelsClose(indexedElement) {
     }
 }
 
+function panelClick() {
+    const indexedElement = boxes.indexOf(this);
+    const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
+    //TODO: this must be done in more dynamic way
+    // When clicked to element scroll to position
+    if (isPanelStacked) {
+        switch (indexedElement) {
+        case 0:
+            wrapper.scrollLeft = 298;
+            break;
+        case 1:
+            wrapper.scrollLeft = 607;
+            break;
+        case 2:
+            wrapper.scrollLeft = 1059;
+            break;
+        case 3:
+            wrapper.scrollLeft = 1971;
+            break;
+        case 4:
+            wrapper.scrollLeft = 2584;
+            break;
+        case 5:
+            wrapper.scrollLeft = 3076;
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 wrapper.addEventListener("scroll", scrollWrap);
 boxes.forEach(box => box.addEventListener("mouseenter", onHover));
 boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
 dash.addEventListener("mouseenter", dashMouseEnter);
+boxes.forEach(box => box.addEventListener("click", panelClick));
