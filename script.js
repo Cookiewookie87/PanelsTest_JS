@@ -100,7 +100,7 @@ function onHover(event) {
     if((event.fromElement == body || event.fromElement == wrapper) && event.toElement.classList.contains("box") && isPanelStacked) {
         slidingPanelsOpen(indexedElement);
     }
-
+    
     // controll if we hover from box to box and if panel is stacked
     if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && isPanelStacked) {
         if (!hoverExtendFlag) {
@@ -137,7 +137,7 @@ function onHoverLeave(event) {
     }
 
     // controll from box to box hover out, to return to initial state
-    if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && (isPanelStacked === false || (isPanelStacked === true && boxesFlagArray[toBoxIndex].isStacked === false )) ) { // checks if the from is true and to is false (first false element)
+    if (event.fromElement.classList.contains("box") && event.toElement.classList.contains("box") && (isPanelStacked === false || (isPanelStacked === true && boxesFlagArray[toBoxIndex].isStacked === false ))) { // checks if the from is true and to is false (first false element)
         slidingPanelsClose(indexedElement);
         hoverExtendFlag = false;
     }
@@ -164,41 +164,22 @@ function panelClick() {
     if (isPanelStacked) {
         switch (indexedElement) {
         case 0:
-            wrapper.scroll({
-                left: 298,
-                behavior: "smooth"
-            });
-
+            scrollPanel(298);
             break;
         case 1:
-            wrapper.scroll({
-                left: 607,
-                behavior: "smooth"
-            });
+            scrollPanel(607);
             break;
         case 2:
-            wrapper.scroll({
-                left: 1059,
-                behavior: "smooth"
-            });
+            scrollPanel(1059);
             break;
         case 3:
-            wrapper.scroll({
-                left: 1971,
-                behavior: "smooth"
-            });
+            scrollPanel(1971);
             break;
         case 4:
-            wrapper.scroll({
-                left: 2584,
-                behavior: "smooth"
-            });
+            scrollPanel(2584);
             break;
         case 5:
-            wrapper.scroll({
-                left: 3076,
-                behavior: "smooth"
-            });
+            scrollPanel(3076);
             break;
         default:
             break;
@@ -219,6 +200,13 @@ function slidingPanelsClose(indexedElement) {
         const iCoord = boxes[i].getBoundingClientRect();
         boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
     }
+}
+// function to set scroll position
+function scrollPanel(scrollTo) { 
+    wrapper.scroll({
+        left: scrollTo,
+        behavior: "smooth"
+    });
 }
 
 wrapper.addEventListener("scroll", scrollWrap);
