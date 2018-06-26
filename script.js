@@ -4,6 +4,7 @@ const body = document.querySelector("body");
 const dash = document.querySelector(".dashboard");
 const hoverMargin = 100; //px
 let hoverExtendFlag = false; // flag to update if on hover panels are extended
+let panelClickFlag = false; // flag for when panel clicked that it behaves naturally on hover and out
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false});
@@ -185,21 +186,29 @@ function panelClick() {
             break;
         }
     }
+    panelClickFlag = true;
 }
 
 // function to slide panels to open (+)
 function slidingPanelsOpen(indexedElement) { 
-    for (let i = indexedElement + 1; i < boxes.length; i++) {
-        const iCoord = boxes[i].getBoundingClientRect();
-        boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
+    // TODO hover still fires when panel is clicked
+    if (!panelClickFlag) { // check if panel was clicked, if it was, skip this
+        for (let i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
+        }
     }
+    panelClickFlag = false;
 }
 // function to slide panels to close (-)
-function slidingPanelsClose(indexedElement) { 
-    for (let i = indexedElement + 1; i < boxes.length; i++) {
-        const iCoord = boxes[i].getBoundingClientRect();
-        boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
+function slidingPanelsClose(indexedElement) {
+    if (!panelClickFlag) { // check if panel was clicked, if it was, skip this
+        for (let i = indexedElement + 1; i < boxes.length; i++) {
+            const iCoord = boxes[i].getBoundingClientRect();
+            boxes[i].style.left = `${iCoord.left - hoverMargin}px`;
+        }
     }
+    panelClickFlag = false;
 }
 // function to set scroll position
 function scrollPanel(scrollTo) { 
