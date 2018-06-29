@@ -3,6 +3,9 @@
 // 2. when scroll and panels get stacked below mouse, and when mouse moves, the panel move is broken
 // 3. when panels are stacked, and if i click 4 panel, the mouse hover is broken (same prolem as 2.?)
 // 4. on other computer in same chrome does not work like it should
+// 5. check slidingPanelsOpen() and onHover() (the last if), this is causing panels to break.
+//    I have to slowly think to remove from body to box and vice versa.
+// 6. Seems like hover event breaks stacking panels when scrolling. Have to do flag or workaround to disable hover when scrolling is active
 
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
@@ -26,7 +29,9 @@ function scrollWrap() {
         const leftSideOfNextItem = (index < boxes.length - 1) ? box.nextElementSibling.getBoundingClientRect().left : 0; // coordinarion of left side of NEXT panel (when index is 8, the next sibling is 0 if it is less than 8 than it is next sibling)
         const leftValue = parseInt(window.getComputedStyle(box, null).getPropertyValue("left")); // gets the left value of CSS without "px"
         let multiplyShrinkMargin = 4; // when panels shrink we want first element to start stacking 20 * 4px (4 because we start at 4 panel)
-        
+
+        // box.style.pointerEvents = "none"; - for disabling cursor hover or actions when scrolling
+
         // change dashboard
         if (index === 0 && leftSideOfCurrent === leftValue) {
             //dash.style.backgroundImage = "url(img/0.1.png)";
@@ -195,7 +200,7 @@ function panelClick() {
 
 // function to slide panels to open (+)
 function slidingPanelsOpen(indexedElement) { 
-    // TODO hover still fires when panel is clicked
+    // TODO hover still fires when panel 4 is clicked
     for (let i = indexedElement + 1; i < boxes.length; i++) {
         const iCoord = boxes[i].getBoundingClientRect();
         boxes[i].style.left = `${iCoord.left + hoverMargin}px`;
