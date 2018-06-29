@@ -1,3 +1,9 @@
+// TODO
+// 1. when fast scroll, panels margin is broken
+// 2. when scroll and panels get stacked below mouse, and when mouse moves, the panel move is broken
+// 3. when panels are stacked, and if i click 4 panel, the mouse hover is broken (same prolem as 2.?)
+// 4. on other computer in same chrome does not work like it should
+
 const boxes = Array.from(document.querySelectorAll(".box"));
 const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
@@ -19,7 +25,7 @@ function scrollWrap() {
         const rightSideOfCurrent = boxCoord.right; // coordinarion of right side of panel
         const leftSideOfNextItem = (index < boxes.length - 1) ? box.nextElementSibling.getBoundingClientRect().left : 0; // coordinarion of left side of NEXT panel (when index is 8, the next sibling is 0 if it is less than 8 than it is next sibling)
         const leftValue = parseInt(window.getComputedStyle(box, null).getPropertyValue("left")); // gets the left value of CSS without "px"
-        let multiplyShrinkMargin = 4; // when panels shrink we want first element to start stacking 20 * 4px
+        let multiplyShrinkMargin = 4; // when panels shrink we want first element to start stacking 20 * 4px (4 because we start at 4 panel)
         
         // change dashboard
         if (index === 0 && leftSideOfCurrent === leftValue) {
@@ -59,7 +65,7 @@ function scrollWrap() {
                     let shrinkMargin = 20;
                     shrinkMargin *= multiplyShrinkMargin;
                     box.style.left = shrinkMargin + "px";
-                    multiplyShrinkMargin++;
+                    multiplyShrinkMargin++;   
                 }
             });
         } else if (index < 5 && leftSideOfCurrent > leftValue && !boxes[index].classList.contains("shadow")) { 
