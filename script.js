@@ -12,13 +12,30 @@ const wrapper = document.querySelector(".wrapper");
 const body = document.querySelector("body");
 const dash = document.querySelector(".dashboard");
 const hoverMargin = 100; //px
+let isScrolling; // flaf when user is scrolling
 let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
 for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false});
 }
 
-function scrollWrap() {
+wrapper.addEventListener("scroll", function() {
+
+    window.clearTimeout(isScrolling); // Clear our timeout throughout the scroll
+
+    // when user is NOT scrolling:
+    isScrolling = setTimeout(function () {
+        console.log("Scrolling has stopped.");
+        for (let i = 0; i < boxes.length; i++) {
+            boxes[i].style.pointerEvents = "auto";  // for enabling cursor hover or actions
+        }
+        boxes.forEach(box => box.addEventListener("mouseenter", onHover));
+        boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
+        dash.addEventListener("mouseenter", dashMouseEnter);
+        boxes.forEach(box => box.addEventListener("click", panelClick));
+    }, 60);
+
+    // when user is scrolling:
     //console.log(wrapper.scrollLeft);
     boxes.forEach((box, index) => {
         const boxCoord = box.getBoundingClientRect();
@@ -30,7 +47,9 @@ function scrollWrap() {
         const leftValue = parseInt(window.getComputedStyle(box, null).getPropertyValue("left")); // gets the left value of CSS without "px"
         let multiplyShrinkMargin = 4; // when panels shrink we want first element to start stacking 20 * 4px (4 because we start at 4 panel)
 
-        // box.style.pointerEvents = "none"; - for disabling cursor hover or actions when scrolling
+        for (let i = 0; i < boxes.length; i++) {
+            boxes[i].style.pointerEvents = "none";  // for disabling cursor hover or actions when scrolling
+        }
 
         // change dashboard
         if (index === 0 && leftSideOfCurrent === leftValue) {
@@ -95,7 +114,9 @@ function scrollWrap() {
             }
         }
     });
-}
+
+}, false);
+
 
 function onHover(event) {
     const indexedElement = boxes.indexOf(this);
@@ -221,8 +242,7 @@ function scrollPanel(scrollTo) {
     });
 }
 
-wrapper.addEventListener("scroll", scrollWrap);
-boxes.forEach(box => box.addEventListener("mouseenter", onHover));
-boxes.forEach(box => box.addEventListener("mouseleave", onHoverLeave));
-dash.addEventListener("mouseenter", dashMouseEnter);
-boxes.forEach(box => box.addEventListener("click", panelClick));
+
+
+
+
