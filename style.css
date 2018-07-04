@@ -35,22 +35,18 @@ body {
 .wrapper .box0 {
     min-width: 370px;
     background-color: #333;
-    left: 60px;
 }
 .wrapper .box1 {
     min-width: 512px;
     background-color: #4d4d4d;
-    left: 120px;
 }
 .wrapper .box2 {
     min-width: 973px;
     background-color: #666;
-    left: 180px;
 }
 .wrapper .box3 {
     min-width: 512px;
     background-color: #808080;
-    left: 240px
 }
 .wrapper .box4 {
     min-width: 512px;
@@ -71,9 +67,4 @@ body {
     min-width: 329px;
     height: 900px;
     background-color: white;
-}
-
-.disable-hover,
-.disable-hover * {
-    pointer-events: none !important;
 }
