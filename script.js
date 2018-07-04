@@ -14,18 +14,17 @@ const body = document.querySelector("body");
 const smallMargin = 20; // px
 const bigMargin = 60; // px
 const hoverMargin = 100; //px
-let isHover = false;
+let isHover = false; // flag to update if on hover panels are extended
 let isScrolling; // flaf when user is scrolling
-let hoverExtendFlag = false; // flag to update if on hover panels are extended
 let boxesFlagArray = []; // flag for stacked panels
 let supressEvents = false;
 
 for(var i = 0; i < boxes.length; i++){
     boxesFlagArray.push({"isStacked": false});
     let box = boxes[i];
-    box.addEventListener("click", panelClick)
-    box.addEventListener("mouseenter", onHover)
-    box.addEventListener("mouseleave", hoverLeave)
+    box.addEventListener("click", panelClick);
+    box.addEventListener("mouseenter", onHover);
+    box.addEventListener("mouseleave", hoverLeave);
 }
 dash.addEventListener("mouseenter", dashMouseEnter);
 
