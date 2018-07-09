@@ -106,9 +106,9 @@ function scrolling() {
         const boxCoord = box.getBoundingClientRect();
         const dashCoord = dash.getBoundingClientRect();
         const dashRight = dashCoord.right;
-        const leftSideOfCurrent = boxCoord.left; // coordinarion of left side of panel
-        const rightSideOfCurrent = boxCoord.right; // coordinarion of right side of panel
-        const leftSideOfNextItem = box.nextElementSibling.getBoundingClientRect().left;
+        const leftSideOfCurrent = Math.floor(boxCoord.left); // coordinarion of left side of panel
+        const rightSideOfCurrent = Math.floor(boxCoord.right); // coordinarion of right side of panel
+        const leftSideOfNextItem = Math.floor(box.nextElementSibling.getBoundingClientRect().left);
         const leftValue = parseInt(window.getComputedStyle(box, null).getPropertyValue("left")); // gets the left value of CSS without "px"
         
         // change dashboard
