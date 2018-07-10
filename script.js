@@ -99,6 +99,7 @@ function scrolling() {
         supressEvents = false;
 
     }, 200);
+
     // console.log(wrapper.scrollLeft);
 
     // when user IS scrolling
@@ -165,11 +166,10 @@ function scrolling() {
                 boxesFlagArray[i].isStacked = true;
             }
         }
-
     });
 }
 
-function onHover(event) { 
+function onHover() { 
     if (supressEvents) return;
     const indexedElement = boxes.indexOf(this);
     const isPanelStacked = boxesFlagArray[indexedElement].isStacked;
